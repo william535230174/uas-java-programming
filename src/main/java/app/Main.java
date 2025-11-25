@@ -30,16 +30,21 @@ public class Main {
         });
 
         post("/api/login", (req, res) -> {
+            res.type("application/json");
+
             Map<String, Object> body = gson.fromJson(req.body(), new TypeToken<Map<String, Object>>(){}.getType());
             String username = (String) body.get("username");
-            String display = (String) body.getOrDefault("displayName", username);
+            String password = (String) body.get("password");
+
+            if (!"admin".equals(username) || !"admin".equals(password)) {
+                return gson.toJson(Map.of("ok", false, "msg", "Username atau password salah"));
+            }
 
             Session session = req.session(true);
-            session.attribute("user", new User(username, display));
+            session.attribute("user", new User(username, "Administrator"));
             session.attribute("cart", new ArrayList<CartItem>());
 
-            res.type("application/json");
-            return gson.toJson(Map.of("ok", true, "username", username));
+            return gson.toJson(Map.of("ok", true));
         });
 
         post("/api/cart/add", (req, res) -> {
