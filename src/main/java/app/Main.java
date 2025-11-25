@@ -29,21 +29,9 @@ public class Main {
             return gson.toJson(menuService.getByCategory(req.params("c")));
         });
 
-        post("/api/login", (req, res) -> {
-            res.type("application/json");
-
-            Map<String, Object> body = gson.fromJson(req.body(), new TypeToken<Map<String, Object>>(){}.getType());
-            String username = (String) body.get("username");
-            String password = (String) body.get("password");
-
-            if (!"".equals(username) || !"".equals(password)) {
-                return gson.toJson(Map.of("ok", false, "msg", "Username atau password salah"));
-            }
-
+        post("/login", (req, res) -> {
             Session session = req.session(true);
-            session.attribute("user", new User(username, "Administrator"));
-            session.attribute("cart", new ArrayList<CartItem>());
-
+            session.attribute("user", new User("guest", "Guest"));
             return gson.toJson(Map.of("ok", true));
         });
 
